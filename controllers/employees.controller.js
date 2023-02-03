@@ -1,12 +1,24 @@
-const getEmployees = (req, res, next) => {
-    res.send('Obteniendo empleados')
+const pool = require('../db.js');
+
+const getEmployees = async (req, res, next) => {
+    const [row] = await pool.query('SELECT * FROM employee')
+    res.json(row)
     }
 
-const postEmployees = (req, res, next) => {
-    res.send('Creando empleados')
+const createEmployees = async (req, res, next) => {
+
+    const {name, salary} = req.body
+    // console.log(req.body)
+    const [rows] = await pool.query('INSERT INTO employee(name, salary) VALUES (?, ?)', [name, salary])
+    // console.log(name, salary)
+    res.send({
+        id: rows.insertId,
+        name,
+        salary        
+    })
     }
 
-const putEmployees = (req, res, next) => {
+const updateEmployees = (req, res, next) => {
     res.send('Actualizando empleado')
     }
 
@@ -14,4 +26,4 @@ const deleteEmployees = (req, res, next) => {
     res.send('Eliminando  empleados')
     }
 
-module.exports = {getEmployees, postEmployees, putEmployees, deleteEmployees}
+module.exports = {getEmployees, createEmployees, updateEmployees, deleteEmployees}
